@@ -1,0 +1,6 @@
+/* Minimal reset */
+* { box-sizing: border-box; }
+html, body, h1, h2, h3, p, ul, ol, li, figure { margin: 0; padding: 0; }
+img { max-width: 100%; display: block; }
+button { font: inherit; cursor: pointer; }
+input, select, textarea { font: inherit; }

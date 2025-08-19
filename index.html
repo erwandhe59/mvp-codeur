@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Immo Agents — MVP</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <!-- Typo arrondie, amicale -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/reset.css">
+  <link rel="stylesheet" href="styles/styles.css">
+  <meta name="color-scheme" content="light">
+</head>
+<body>
+  <!-- Fond doodle pastel -->
+  <div class="bg">
+    <div class="dots"></div>
+    <div class="rays"></div>
+  </div>
+
+  <!-- Top navigation -->
+  <header id="appHeader" class="app-header hidden">
+    <div class="container header-inner">
+      <div class="brand">
+        <img src="assets/logo.svg" alt="Immo Agents" class="logo">
+        <span>Immo Agents</span>
+      </div>
+
+      <nav class="nav" aria-label="Navigation principale">
+        <button class="nav-btn" data-section="agents" data-nav>Agents</button>
+        <button class="nav-btn" data-section="history" data-nav>Historique</button>
+        <button class="nav-btn" data-section="settings" data-nav>Réglages</button>
+        <button class="nav-btn" data-section="help" data-nav>Aide</button>
+        <span class="nav-underline" aria-hidden="true"></span>
+      </nav>
+
+      <div class="user-actions">
+        <button id="logoutBtn" class="btn outline ripple">Se déconnecter</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Landing (avant connexion) -->
+  <main id="landing" class="landing">
+    <div class="container landing-inner">
+      <div class="hero card paper center fade-in">
+        <img src="assets/logo.svg" class="hero-logo" alt="Immo Agents">
+        <h1 class="title-sticker">Des agents IA au service de l’immobilier</h1>
+        <p class="sub">Générez <strong>mandats</strong>, <strong>formulaires</strong>, <strong>analyses</strong> et <strong>home staging</strong> en quelques clics.</p>
+        <div class="cta">
+          <button id="openLogin" class="btn primary ripple">Se connecter</button>
+          <button id="openSignup" class="btn soft ripple">S'inscrire</button>
+        </div>
+      </div>
+
+      <section class="features">
+        <div class="feature-card card paper fade-in">
+          <h3>100% web</h3>
+          <p>Pas d’installation : tout depuis le navigateur.</p>
+        </div>
+        <div class="feature-card card paper fade-in" style="animation-delay:.04s">
+          <h3>Agents spécialisés</h3>
+          <p>Mandat, Formulaire, Analyse, Home Staging.</p>
+        </div>
+        <div class="feature-card card paper fade-in" style="animation-delay:.08s">
+          <h3>IA prête</h3>
+          <p>Mock inclus + branchement API LLM optionnel.</p>
+        </div>
+      </section>
+
+      <footer class="landing-footer">
+        <small>© <span id="year"></span> Immo Agents — MVP démo</small>
+      </footer>
+    </div>
+  </main>
+
+  <!-- App (après connexion) -->
+  <main id="app" class="app hidden">
+    <!-- Agents -->
+    <section id="section-agents" class="section">
+      <div class="container">
+        <header class="section-head">
+          <h2 class="section-title title-sticker">Choisissez un agent</h2>
+          <p class="section-sub">
+            Des assistants “cartoon”, chacun expert d’une tâche métier.
+            <span class="dots-inline" aria-hidden="true">
+              <i></i><i></i><i></i><i></i><i></i>
+            </span>
+          </p>
+        </header>
+
+        <div id="agentsGrid" class="grid"></div>
+
+        <div id="workPanel" class="work-panel card paper hidden">
+          <div class="work-header">
+            <div class="work-title">
+              <img id="workAvatar" class="avatar" alt="avatar de l'agent">
+              <div>
+                <h3 id="workName"></h3>
+                <p id="workTagline" class="muted"></p>
+              </div>
+            </div>
+            <div class="work-tabs" role="tablist" aria-label="Modes de travail">
+              <button class="tab active" data-mode="form" role="tab" aria-selected="true">Formulaire</button>
+              <button class="tab" data-mode="chat" role="tab" aria-selected="false">Chatbot</button>
+            </div>
+            <button id="closePanel" class="icon-btn ripple" title="Fermer" aria-label="Fermer">✕</button>
+          </div>
+
+          <div class="work-body">
+            <!-- FORM MODE -->
+            <form id="agentForm" class="form" autocomplete="off" role="tabpanel" aria-labelledby="tab-form"></form>
+            <div class="actions" id="formActions">
+              <button id="generateBtn" class="btn primary ripple">Générer</button>
+              <button id="clearBtn" class="btn outline ripple" type="button">Effacer</button>
+            </div>
+            <div id="resultCard" class="result-card hidden">
+              <div class="result-toolbar">
+                <button id="copyBtn" class="btn tiny outline ripple">Copier</button>
+                <button id="printBtn" class="btn tiny outline ripple">PDF</button>
+                <button id="saveBtn" class="btn tiny outline ripple">Enregistrer</button>
+              </div>
+              <article id="resultContent" class="result" contenteditable="true"></article>
+            </div>
+
+            <!-- CHAT MODE -->
+            <section id="chatPane" class="chat-pane hidden" role="tabpanel" aria-labelledby="tab-chat">
+              <header class="chat-head">
+                <div class="character" id="chatCharacter" aria-hidden="true"></div>
+                <div class="head-meta">
+                  <h4 id="chatTitle">Assistant</h4>
+                  <p id="chatDesc" class="muted small">Posez votre question, l’agent vous guide.</p>
+                </div>
+              </header>
+
+              <div id="chatStream" class="chat-stream" aria-live="polite"></div>
+
+              <form id="chatForm" class="chat-input-row" autocomplete="off">
+                <input id="chatInput" class="input chat-input" placeholder="Écrire un message…" />
+                <button class="btn primary tiny ripple" id="chatSend">Envoyer</button>
+              </form>
+            </section>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Historique -->
+    <section id="section-history" class="section hidden">
+      <div class="container">
+        <header class="section-head">
+          <h2 class="section-title title-sticker">Historique</h2>
+          <p class="section-sub">Vos générations, prêtes à renommer, exporter, supprimer.</p>
+        </header>
+
+        <div class="toolbar-row">
+          <input id="historySearch" class="input search" placeholder="Rechercher une génération…">
+        </div>
+        <div id="historyList" class="list"></div>
+      </div>
+    </section>
+
+    <!-- Réglages -->
+    <section id="section-settings" class="section hidden">
+      <div class="container">
+        <header class="section-head">
+          <h2 class="section-title title-sticker">Réglages</h2>
+          <p class="section-sub">Personnalisez le ton, le niveau de détail et la connexion à l’API.</p>
+        </header>
+
+        <div class="settings-grid">
+          <div class="card paper">
+            <h3>Mode</h3>
+            <label class="switch">
+              <input type="checkbox" id="mockToggle" checked>
+              <span>Mode maquette (par défaut)</span>
+            </label>
+            <p class="muted">Quand désactivé, l’outil essaiera d’appeler votre API LLM.</p>
+          </div>
+
+          <div class="card paper">
+            <h3>Préférences</h3>
+            <label>Ton
+              <select id="tone" class="input">
+                <option value="neutre">Neutre</option>
+                <option value="commercial">Commercial</option>
+                <option value="juridique">Juridique</option>
+              </select>
+            </label>
+            <label>Niveau de détail
+              <select id="detail" class="input">
+                <option value="court">Court</option>
+                <option value="moyen" selected>Moyen</option>
+                <option value="complet">Complet</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="card paper">
+            <h3>Connexion LLM (optionnel)</h3>
+            <label>Clé API
+              <input id="apiKey" class="input" type="password" placeholder="sk-...">
+            </label>
+            <label>URL API
+              <input id="apiUrl" class="input" placeholder="https://example-llm.endpoint/v1/chat/completions">
+            </label>
+            <label>Modèle
+              <input id="apiModel" class="input" placeholder="example-model">
+            </label>
+            <button id="saveSettings" class="btn primary tiny ripple">Enregistrer</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Aide -->
+    <section id="section-help" class="section hidden">
+      <div class="container">
+        <header class="section-head">
+          <h2 class="section-title title-sticker">Aide rapide</h2>
+          <p class="section-sub">Quelques étapes pour bien démarrer.</p>
+        </header>
+        <ol class="steps card paper">
+          <li><span class="step-dot">1</span> Créez un compte fictif (ou connectez‑vous).</li>
+          <li><span class="step-dot">2</span> Ouvrez un agent, utilisez <strong>Formulaire</strong> ou <strong>Chatbot</strong> puis <strong>Générer</strong>.</li>
+          <li><span class="step-dot">3</span> Modifiez le texte si besoin, puis <strong>Enregistrer</strong> ou <strong>PDF</strong>.</li>
+          <li><span class="step-dot">4</span> (Optionnel) Renseignez une clé API LLM dans Réglages.</li>
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <!-- Auth Modal -->
+  <div id="authModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+    <div class="modal-content card paper">
+      <div class="modal-header">
+        <h3 id="authTitle">Bienvenue</h3>
+        <button class="icon-btn ripple" data-close="authModal" aria-label="Fermer">✕</button>
+      </div>
+      <div class="modal-body">
+        <label>Email
+          <input id="authEmail" class="input" type="email" placeholder="vous@exemple.com" required>
+        </label>
+        <label>Mot de passe
+          <input id="authPassword" class="input" type="password" placeholder="••••••••" required>
+        </label>
+        <div class="actions">
+          <button id="loginBtn" class="btn primary ripple">Se connecter</button>
+          <button id="signupBtn" class="btn soft ripple">S'inscrire</button>
+        </div>
+        <p class="muted small">Démo : pas de serveur, identifiants stockés localement.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="scripts/mockData.js"></script>
+  <script src="scripts/ui.js" type="module"></script>
+  <script src="scripts/agents.js" type="module"></script>
+  <script src="scripts/app.js" type="module"></script>
+</body>
+</html>

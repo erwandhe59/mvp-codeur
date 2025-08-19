@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">
+  <rect width="120" height="120" rx="26" fill="#fff5e9" stroke="#ffe6c7"></rect>
+  <circle cx="60" cy="46" r="22" fill="#ffb347"></circle>
+  <rect x="26" y="70" width="68" height="26" rx="13" fill="#fff" stroke="#ffe0b6"></rect>
+  <circle cx="52" cy="44" r="4" fill="#4b2c06"></circle>
+  <circle cx="68" cy="44" r="4" fill="#4b2c06"></circle>
+  <path d="M50 51c7 -5 13 -5 20 0" fill="none" stroke="#4b2c06" stroke-width="3" stroke-linecap="round"></path>
+  <!-- loupe / graphique -->
+  <path d="M76 28a10 10 0 1 0 7 17" fill="none" stroke="#ff9d2e" stroke-width="3"></path>
+  <path d="M88 42l6 6" stroke="#ff9d2e" stroke-width="3" stroke-linecap="round"></path>
+  <path d="M70 36v6M74 34v8M78 33v9" stroke="#fff" stroke-width="2"></path>
+</svg>
