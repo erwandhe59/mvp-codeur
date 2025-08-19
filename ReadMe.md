@@ -16,3 +16,5 @@ Ouvrez `index.html` dans un navigateur.
 - V1.1 : backend (auth réelle, stockage, sécurisation)
 - V1.2 : équipes, partage, facturation
 - V1.3 : modèles immobiliers FR + signature électronique
+
+
